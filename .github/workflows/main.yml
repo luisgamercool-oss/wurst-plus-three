@@ -1,0 +1,33 @@
+name: Gradle Build
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v5
+      - name: Set up JDK 8
+        uses: actions/setup-java@v5
+        with:
+          distribution: 'zulu'
+          java-version: 8
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+      - name: Build with Gradle
+        run: |
+          ./gradlew setupDecompWorkspace
+          ./gradlew build
+      - name: List files
+        run: ls
+      - name: Upload a Build Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          # Artifact name
+          name: WurstPlus3
+          # A file, directory or wildcard pattern that describes what to upload
+          path: ./build/libs/*-release.jar
